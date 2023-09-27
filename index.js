@@ -1,6 +1,8 @@
-let port = 3000;
+let express = require('express');
+let app = express();
+let port = 3000;//specifying the port
 
-app.get('/',(req, res)=> res.send('ok'));//implementin the response behaviour
+app.get('/',(req, res)=> res.send('ok'));
 app.listen(port,()=>console.log('Express app is running on port 3000'))
 app.get('/test',(req,res)=>{
     res.status(200).json({status:200, message:'ok'});

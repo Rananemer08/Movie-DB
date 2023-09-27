@@ -9,9 +9,7 @@ const movies = [
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
 ]
 
-
 app.get('/',(req, res)=> res.send('ok'));
-
 
 app.get('/test',(req,res)=>{
     res.status(200).json({status:200, message:'ok'});
@@ -23,11 +21,11 @@ app.get('/time',(req,res)=>{
     res.status(200).json({status:200, message: `${hour}:${minute<10?'0':''}${minute}`});
 });
 
+
 app.get('/hello/:id?',(req,res)=>{
     let userID=req.params.id || 'empty id';
     res.status(200).json({status:200, message:`Hello, ${userID}`});
 });
-
 app.get('/search',(req,res)=>{
     let userSearch=req.query.s;
     if(typeof userSearch!= 'undefined' && userSearch!=""){
@@ -36,8 +34,9 @@ app.get('/search',(req,res)=>{
     else{
         res.status(500).json({status:500, error: true ,message:`you have to provide a search`});
     }
-
+   
 });
+
 // app.get('/movies/add',(req,res)=>{
 //     res.status(200).json({status:200, message:'create'});
 // });
@@ -47,9 +46,12 @@ app.get('/search',(req,res)=>{
 app.get('/movies/edit',(req,res)=>{
     res.status(200).json({status:200, message:'update'});
 });
-app.get('/movies/delete',(req,res)=>{
-    res.status(200).json({status:200, message:'delete'});
-});
+// app.get('/movies/edit',(req,res)=>{
+//     res.status(200).json({status:200, message:'update'});
+// });
+// app.get('/movies/delete',(req,res)=>{
+//     res.status(200).json({status:200, message:'delete'});
+// });
 
 app.get('/movies/get/:condition?',(req,res)=>{
     let getBy=req.params.condition;
@@ -93,6 +95,7 @@ app.get('/movies/add',(req,res)=>{
         else{
             movies.push({ title: addTitle, year: addYear, rating: 4 });
             res.status(200).json({ status: 200, data: movies });
+
         }
     }
     else {
@@ -101,14 +104,12 @@ app.get('/movies/add',(req,res)=>{
 } else{
     res.status(200).json({status:200, message:'create'});
 }
-
+    
 });
-
 
 app.get('/movies/delete/:id?',(req,res)=>{
     let bookID=req.params.id;
     if(bookID){
-
     if(bookID>0 && bookID<=movies.length){
         movies.splice(bookID-1,1);
         res.status(200).json({status:200, data:movies});
@@ -124,4 +125,47 @@ app.get('/movies/delete/:id?',(req,res)=>{
     }
 });
 
+
+
+app.get('/movies/edit/:id?',(req,res)=>{
+    let bookID=req.params.id;
+    let newTitle=req.query.title;
+    let newRating=req.query.rating;
+    let newYear=parseInt(req.query.year);
+
+    if(bookID){
+        if(bookID>0 && bookID<=movies.length){
+            if(newTitle||newYear||newRating){
+                let movieToUpdate = movies[bookID - 1];
+                if (newTitle) {
+                    movieToUpdate.title = newTitle;
+                }
+                if (!isNaN(newYear)) {
+                    movieToUpdate.year = newYear;
+                }
+                if (newRating) {
+                    movieToUpdate.rating = newRating;
+                }
+                res.status(200).json({status: 200, data: movies});
+            }
+            else{
+                res.status(404).json({status:404, error: true, message:`nothing updated`});
+            }
+        }
+        else if(bookID>movies.length || bookID<=0){
+            res.status(404).json({status:404, error: true, message:`The movie ${bookID} doesn't exit`});
+        }
+        else{
+            res.status(404).json({status:404, error: true, message:`invalid id`});
+        }
+
+    }
+    else{
+        res.status(200).json({status:200, message:'update'});
+
+    }
+
+
+
+});
 app.listen(port,()=>console.log('Express app is running on port 3000'))

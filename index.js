@@ -38,9 +38,9 @@ app.get('/search',(req,res)=>{
     }
 
 });
-app.get('/movies/add',(req,res)=>{
-    res.status(200).json({status:200, message:'create'});
-});
+// app.get('/movies/add',(req,res)=>{
+//     res.status(200).json({status:200, message:'create'});
+// });
 // app.get('/movies/get',(req,res)=>{
 //     res.status(200).json({status:200, data:movies});
 // });
@@ -84,6 +84,7 @@ app.get('/movies/add',(req,res)=>{
     let addTitle= req.query.title;
     let addYear= parseInt(req.query.year);
     let addRating=req.query.rating;
+    if(addTitle||addYear||addRating){
     if (addTitle && !isNaN(addYear) && addYear.toString().length==4){
         if(addRating){
             movies.push({ title: addTitle, year: addYear, rating: addRating });
@@ -92,13 +93,35 @@ app.get('/movies/add',(req,res)=>{
         else{
             movies.push({ title: addTitle, year: addYear, rating: 4 });
             res.status(200).json({ status: 200, data: movies });
-
         }
     }
     else {
         res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'});
     }
+} else{
+    res.status(200).json({status:200, message:'create'});
+}
 
+});
+
+
+app.get('/movies/delete/:id?',(req,res)=>{
+    let bookID=req.params.id;
+    if(bookID){
+
+    if(bookID>0 && bookID<=movies.length){
+        movies.splice(bookID-1,1);
+        res.status(200).json({status:200, data:movies});
+    }
+    else if(bookID>movies.length || bookID<=0){
+    res.status(404).json({status:404, error: true, message:`The movie ${bookID} doesn't exit`});
+    }else{
+    res.status(404).json({status:404, error: true, message:`invalid id`});
+    }
+    }
+    else{
+    res.status(200).json({status:200, message:'delete'});
+    }
 });
 
 app.listen(port,()=>console.log('Express app is running on port 3000'))

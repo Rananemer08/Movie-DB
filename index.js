@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let port = 3000;//specifying the port
 
+
 const movies = [
     { title: 'Jaws', year: 1975, rating: 8 },
     { title: 'Avatar', year: 2009, rating: 7.8 },
@@ -9,33 +10,37 @@ const movies = [
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
 ]
 
-app.get('/',(req, res)=> res.send('ok'));
 
-app.get('/test',(req,res)=>{
-    res.status(200).json({status:200, message:'ok'});
-});
-app.get('/time',(req,res)=>{
-    let currentTime= new Date();
-    let hour=currentTime.getHours();
-    let minute=currentTime.getMinutes()
-    res.status(200).json({status:200, message: `${hour}:${minute<10?'0':''}${minute}`});
-});
+// app.get('/',(req, res)=> res.send('ok'));
 
+// app.get('/test',(req,res)=>{
+//     res.status(200).json({status:200, message:'ok'});
+// });
+// app.get('/time',(req,res)=>{
+//     let currentTime= new Date();
+//     let hour=currentTime.getHours();
+//     let minute=currentTime.getMinutes()
+//     res.status(200).json({status:200, message: `${hour}:${minute<10?'0':''}${minute}`});
+// });
 
-app.get('/hello/:id?',(req,res)=>{
-    let userID=req.params.id || 'empty id';
-    res.status(200).json({status:200, message:`Hello, ${userID}`});
-});
-app.get('/search',(req,res)=>{
-    let userSearch=req.query.s;
-    if(typeof userSearch!= 'undefined' && userSearch!=""){
-        res.status(200).json({status:200, message:`ok`, data: userSearch});
-    }
-    else{
-        res.status(500).json({status:500, error: true ,message:`you have to provide a search`});
-    }
+// app.get('/hello/:id?',(req,res)=>{//with adding ?, it tells that id is optional
+//     let userID=req.params.id || 'empty id';
+//     res.status(200).json({status:200, message:`Hello, ${userID}`});
+// });
+
+// app.get('/search',(req,res)=>{
+//     let userSearch=req.query.s;//extract the s value from seach
+//     if(typeof userSearch!= 'undefined' && userSearch!=""){
+//         res.status(200).json({status:200, message:`ok`, data: userSearch});
+//     }
+//     else{
+//         res.status(500).json({status:500, error: true ,message:`you have to provide a search`});
+//     }
    
-});
+// });
+
+
+
 
 // app.get('/movies/add',(req,res)=>{
 //     res.status(200).json({status:200, message:'create'});
@@ -43,9 +48,6 @@ app.get('/search',(req,res)=>{
 // app.get('/movies/get',(req,res)=>{
 //     res.status(200).json({status:200, data:movies});
 // });
-app.get('/movies/edit',(req,res)=>{
-    res.status(200).json({status:200, message:'update'});
-});
 // app.get('/movies/edit',(req,res)=>{
 //     res.status(200).json({status:200, message:'update'});
 // });
@@ -53,7 +55,8 @@ app.get('/movies/edit',(req,res)=>{
 //     res.status(200).json({status:200, message:'delete'});
 // });
 
-app.get('/movies/get/:condition?',(req,res)=>{
+
+app.get('/movies/:condition?',(req,res)=>{
     let getBy=req.params.condition;
     if(getBy=='by-date'){
         let sortedByDate=movies.sort((a,b)=>a.year-b.year);
@@ -67,10 +70,13 @@ app.get('/movies/get/:condition?',(req,res)=>{
         let sortedByTitle=movies.sort((a,b)=>a.title.localeCompare(b.title));
         res.status(200).json({status:200, data:sortedByTitle});
     }
+    else{
     res.status(200).json({status:200, data:movies});
+    }
 });
 
-app.get('/movies/get/id/:id?',(req,res)=>{
+
+app.get('/movies/id/:id?',(req,res)=>{
     let bookID=req.params.id;
     if(bookID>0 && bookID<=movies.length){
         res.status(200).json({status:200, data:movies[bookID-1]});
@@ -82,7 +88,8 @@ app.get('/movies/get/id/:id?',(req,res)=>{
     }
 });
 
-app.get('/movies/add',(req,res)=>{
+
+app.post('/movies',(req,res)=>{
     let addTitle= req.query.title;
     let addYear= parseInt(req.query.year);
     let addRating=req.query.rating;
@@ -95,7 +102,6 @@ app.get('/movies/add',(req,res)=>{
         else{
             movies.push({ title: addTitle, year: addYear, rating: 4 });
             res.status(200).json({ status: 200, data: movies });
-
         }
     }
     else {
@@ -107,9 +113,10 @@ app.get('/movies/add',(req,res)=>{
     
 });
 
-app.get('/movies/delete/:id?',(req,res)=>{
+app.delete('/movies/:id?',(req,res)=>{
     let bookID=req.params.id;
     if(bookID){
+
     if(bookID>0 && bookID<=movies.length){
         movies.splice(bookID-1,1);
         res.status(200).json({status:200, data:movies});
@@ -126,8 +133,7 @@ app.get('/movies/delete/:id?',(req,res)=>{
 });
 
 
-
-app.get('/movies/edit/:id?',(req,res)=>{
+app.put('/movies/:id?',(req,res)=>{
     let bookID=req.params.id;
     let newTitle=req.query.title;
     let newRating=req.query.rating;
@@ -166,6 +172,7 @@ app.get('/movies/edit/:id?',(req,res)=>{
     }
 
 
-
+    
 });
+
 app.listen(port,()=>console.log('Express app is running on port 3000'))

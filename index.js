@@ -41,9 +41,9 @@ app.get('/search',(req,res)=>{
 app.get('/movies/add',(req,res)=>{
     res.status(200).json({status:200, message:'create'});
 });
-app.get('/movies/get',(req,res)=>{
-    res.status(200).json({status:200, data:movies});
-});
+// app.get('/movies/get',(req,res)=>{
+//     res.status(200).json({status:200, data:movies});
+// });
 app.get('/movies/edit',(req,res)=>{
     res.status(200).json({status:200, message:'update'});
 });
@@ -80,5 +80,25 @@ app.get('/movies/get/id/:id?',(req,res)=>{
     }
 });
 
+app.get('/movies/add',(req,res)=>{
+    let addTitle= req.query.title;
+    let addYear= parseInt(req.query.year);
+    let addRating=req.query.rating;
+    if (addTitle && !isNaN(addYear) && addYear.toString().length==4){
+        if(addRating){
+            movies.push({ title: addTitle, year: addYear, rating: addRating });
+            res.status(200).json({ status: 200, data: movies });
+        }
+        else{
+            movies.push({ title: addTitle, year: addYear, rating: 4 });
+            res.status(200).json({ status: 200, data: movies });
+
+        }
+    }
+    else {
+        res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'});
+    }
+
+});
 
 app.listen(port,()=>console.log('Express app is running on port 3000'))

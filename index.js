@@ -2,6 +2,13 @@ let express = require('express');
 let app = express();
 let port = 3000;//specifying the port
 
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
+]
+
 
 app.get('/',(req, res)=> res.send('ok'));
 
@@ -31,5 +38,18 @@ app.get('/search',(req,res)=>{
     }
 
 });
+app.get('/movies/add',(req,res)=>{
+    res.status(200).json({status:200, message:'create'});
+});
+app.get('/movies/get',(req,res)=>{
+    res.status(200).json({status:200, data:movies});
+});
+app.get('/movies/edit',(req,res)=>{
+    res.status(200).json({status:200, message:'update'});
+});
+app.get('/movies/delete',(req,res)=>{
+    res.status(200).json({status:200, message:'delete'});
+});
+
 
 app.listen(port,()=>console.log('Express app is running on port 3000'))
